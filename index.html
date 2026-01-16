@@ -23,41 +23,54 @@
     --primary: #22c55e;
     --primary-dark: #16a34a;
     --dark-bg: #0f172a;
-    --card-bg: #020617;
+    --card-bg: rgba(2, 6, 23, 0.85);
     --text-light: #f8fafc;
     --text-muted: #94a3b8;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     --radius: 12px;
     --transition: all 0.3s ease;
 }
 
 body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--dark-bg);
     color: var(--text-light);
     min-height: 100vh;
     overflow-x: hidden;
     line-height: 1.6;
+    position: relative;
 }
 
-/* Fundo Animado Leve */
-.animated-bg {
+/* Video Background */
+.video-background {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
-    background: 
-        radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(34, 197, 94, 0.03) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(34, 197, 94, 0.04) 0%, transparent 50%);
-    animation: float 20s ease-in-out infinite;
+    overflow: hidden;
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(0.5deg); }
+.video-background video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translateX(-50%) translateY(-50%);
+    object-fit: cover;
+    filter: brightness(0.3);
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(2, 6, 23, 0.8) 100%);
 }
 
 /* Container Principal */
@@ -66,6 +79,7 @@ body {
     margin: 0 auto;
     padding: 20px;
     position: relative;
+    z-index: 1;
 }
 
 /* Cabeçalho */
@@ -83,12 +97,14 @@ body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .subtitle {
     font-size: 1.2rem;
-    color: var(--text-muted);
+    color: var(--text-light);
     margin-bottom: 30px;
+    opacity: 0.9;
 }
 
 /* Cards de Serviços */
@@ -104,15 +120,17 @@ body {
     border-radius: var(--radius);
     padding: 30px;
     box-shadow: var(--shadow);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.1);
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .service-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    border-color: rgba(34, 197, 94, 0.3);
 }
 
 .service-card::before {
@@ -148,9 +166,10 @@ body {
 }
 
 .service-card p {
-    color: var(--text-muted);
+    color: var(--text-light);
     margin-bottom: 20px;
     font-size: 0.95rem;
+    opacity: 0.9;
 }
 
 /* Preços */
@@ -162,12 +181,13 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .price-tag::before {
     content: 'R$';
     font-size: 1.2rem;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 /* Botões Principais */
@@ -189,11 +209,12 @@ body {
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
     background: linear-gradient(135deg, var(--primary-dark), #15803d);
 }
 
@@ -220,6 +241,7 @@ body {
     text-align: center;
     margin-bottom: 30px;
     font-size: 2rem;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .testimonial-grid {
@@ -232,7 +254,8 @@ body {
     background: var(--card-bg);
     padding: 25px;
     border-radius: var(--radius);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .testimonial-header {
@@ -248,11 +271,13 @@ body {
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid var(--primary);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .testimonial-info h4 {
     font-size: 1.1rem;
     margin-bottom: 5px;
+    color: var(--text-light);
 }
 
 .testimonial-info span {
@@ -264,6 +289,7 @@ body {
     color: var(--text-light);
     font-style: italic;
     line-height: 1.5;
+    opacity: 0.9;
 }
 
 /* Notificação */
@@ -283,6 +309,7 @@ body {
     border-left: 4px solid var(--primary);
     animation: slideIn 0.5s ease;
     backdrop-filter: blur(10px);
+    border: 1px solid rgba(34, 197, 94, 0.1);
 }
 
 @keyframes slideIn {
@@ -295,6 +322,7 @@ body {
     height: 45px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid var(--primary);
 }
 
 .notification-content {
@@ -311,10 +339,14 @@ body {
 .footer {
     text-align: center;
     padding: 30px 0;
-    color: var(--text-muted);
+    color: var(--text-light);
     font-size: 0.9rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 50px;
+    opacity: 0.8;
+    backdrop-filter: blur(10px);
+    background: rgba(2, 6, 23, 0.5);
+    border-radius: var(--radius);
 }
 
 /* Responsividade Mobile */
@@ -343,6 +375,11 @@ body {
     
     .testimonial-grid {
         grid-template-columns: 1fr;
+    }
+    
+    /* Otimização do video para mobile */
+    .video-background video {
+        filter: brightness(0.25);
     }
 }
 
@@ -387,8 +424,15 @@ body {
 </head>
 
 <body>
-<!-- Fundo Animado Leve -->
-<div class="animated-bg"></div>
+<!-- Video Background -->
+<div class="video-background">
+    <video autoplay muted loop playsinline>
+        <source src="fundo.mp4" type="video/mp4">
+        <!-- Fallback caso o navegador não suporte video -->
+        <div class="video-fallback"></div>
+    </video>
+    <div class="video-overlay"></div>
+</div>
 
 <div class="container">
     <!-- Cabeçalho -->
@@ -615,6 +659,19 @@ document.addEventListener('click', (e) => {
 // ================== INICIALIZAÇÃO ==================
 document.addEventListener('DOMContentLoaded', () => {
     carregarDepoimentos();
+    
+    // Otimização do video background
+    const video = document.querySelector('video');
+    if (video) {
+        video.load();
+        video.play().catch(e => {
+            console.log("Autoplay bloqueado, tentando play com user interaction");
+            // Fallback para autoplay bloqueado
+            document.addEventListener('click', () => {
+                video.play();
+            }, { once: true });
+        });
+    }
     
     // Carregar imagens de forma otimizada
     const images = document.querySelectorAll('img[data-src]');
