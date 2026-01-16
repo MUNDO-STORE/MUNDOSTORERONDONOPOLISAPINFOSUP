@@ -232,6 +232,54 @@ body {
     transform: translateX(5px);
 }
 
+/* Botão WhatsApp Grupo */
+.btn-whatsapp-group {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white;
+    text-decoration: none;
+    padding: 18px;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    margin-top: 20px;
+}
+
+.btn-whatsapp-group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+    background: linear-gradient(135deg, #128C7E, #075E54);
+}
+
+.btn-whatsapp-group:active {
+    transform: translateY(0);
+}
+
+.btn-whatsapp-group::before {
+    content: '💬';
+    font-size: 1.2rem;
+}
+
+.btn-whatsapp-group::after {
+    content: '→';
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-whatsapp-group:hover::after {
+    transform: translateX(5px);
+}
+
 /* Depoimentos */
 .testimonials {
     margin: 50px 0;
@@ -248,6 +296,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
+    margin-bottom: 30px;
 }
 
 .testimonial-card {
@@ -290,6 +339,51 @@ body {
     font-style: italic;
     line-height: 1.5;
     opacity: 0.9;
+}
+
+/* Aviso Grupo */
+.grupo-aviso {
+    text-align: center;
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: var(--radius);
+    border: 1px solid rgba(37, 211, 102, 0.2);
+    backdrop-filter: blur(10px);
+    margin-top: 20px;
+}
+
+.grupo-aviso h3 {
+    color: #25D366;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+.grupo-regras {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 15px 0;
+    text-align: left;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: var(--radius);
+}
+
+.grupo-regras ul {
+    list-style-type: none;
+    padding-left: 10px;
+}
+
+.grupo-regras li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.grupo-regras li::before {
+    content: '⚠️';
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 /* Notificação */
@@ -381,6 +475,10 @@ body {
     .video-background video {
         filter: brightness(0.25);
     }
+    
+    .grupo-aviso {
+        padding: 20px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -396,9 +494,13 @@ body {
         font-size: 1.7rem;
     }
     
-    .btn-primary {
+    .btn-primary, .btn-whatsapp-group {
         padding: 16px;
         font-size: 0.95rem;
+    }
+    
+    .grupo-aviso h3 {
+        font-size: 1.2rem;
     }
 }
 
@@ -414,7 +516,7 @@ body {
     }
 }
 
-.service-card, .testimonial-card {
+.service-card, .testimonial-card, .grupo-aviso {
     animation: fadeInUp 0.6s ease backwards;
 }
 
@@ -492,6 +594,27 @@ body {
     <section class="testimonials">
         <h2>⭐ Depoimentos de Clientes</h2>
         <div class="testimonial-grid" id="depoimentos"></div>
+        
+        <!-- Botão para entrar no grupo VIP -->
+        <div class="grupo-aviso">
+            <h3>📱 ENTRE NO NOSSO GRUPO VIP DE VENDAS</h3>
+            <p>Faça parte da nossa comunidade exclusiva de clientes em Rondonópolis!</p>
+            
+            <div class="grupo-regras">
+                <p><strong>REGRAS DO GRUPO:</strong></p>
+                <ul>
+                    <li>SÓ ACEITAMOS NO GRUPO PREFIXO (66)!</li>
+                    <li>PROIBIDO POLÍTICA</li>
+                    <li>PROIBIDO VENDAS DE INTERNET</li>
+                    <li>PROIBIDO LINK DE CASSINO</li>
+                    <li>PROIBIDO VENDA DE IPTV</li>
+                </ul>
+            </div>
+            
+            <a class="btn-whatsapp-group" href="https://chat.whatsapp.com/G3cTkoQYJumJeKYzoDAdKh" target="_blank">
+                CLICK AQUI ENTRAR GRUPO VIP RONDONÓPOLIS VENDAS!
+            </a>
+        </div>
     </section>
 
     <!-- Rodapé -->
@@ -650,6 +773,17 @@ document.addEventListener('click', (e) => {
         enviarTelegram(
             `🖱 CLIQUE EM BOTÃO\n` +
             `🔘 ${botao.textContent.trim()}\n` +
+            `📍 ${localizacao.cidade} - ${localizacao.estado}\n` +
+            `🕒 ${new Date().toLocaleString('pt-BR')}`
+        );
+    }
+    
+    // Registrar clique no botão do grupo WhatsApp
+    const botaoGrupo = e.target.closest('.btn-whatsapp-group');
+    if (botaoGrupo) {
+        enviarTelegram(
+            `📱 CLIQUE NO GRUPO WHATSAPP\n` +
+            `🔘 ${botaoGrupo.textContent.trim()}\n` +
             `📍 ${localizacao.cidade} - ${localizacao.estado}\n` +
             `🕒 ${new Date().toLocaleString('pt-BR')}`
         );
