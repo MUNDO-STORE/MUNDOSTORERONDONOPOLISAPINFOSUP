@@ -57,7 +57,7 @@ body {
 .top-info {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
 }
 
 .weather-info {
@@ -96,11 +96,23 @@ body {
     font-weight: 700;
     color: var(--primary);
     letter-spacing: 1px;
+    min-width: 70px;
+}
+
+.time-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-day {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 .time-date {
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
 /* Video Background */
@@ -553,14 +565,27 @@ body {
     .top-info {
         width: 100%;
         justify-content: space-between;
+        gap: 15px;
     }
     
     .weather-info, .time-info {
         font-size: 0.8rem;
     }
     
-    .weather-city, .time-date {
-        display: none; /* Oculta o nome da cidade e data em mobile para economizar espaço */
+    .weather-city {
+        display: none;
+    }
+    
+    .time-details {
+        min-width: 100px;
+    }
+    
+    .time-day {
+        font-size: 0.85rem;
+    }
+    
+    .time-date {
+        font-size: 0.75rem;
     }
 }
 
@@ -587,6 +612,12 @@ body {
     }
     
     /* Ajustes para telas muito pequenas */
+    .top-info {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
     .weather-info, .time-info {
         font-size: 0.75rem;
         gap: 5px;
@@ -594,6 +625,19 @@ body {
     
     .weather-icon, .time-icon {
         font-size: 1rem;
+    }
+    
+    .time-display {
+        min-width: 60px;
+        font-size: 0.9rem;
+    }
+    
+    .time-day {
+        font-size: 0.8rem;
+    }
+    
+    .time-date {
+        font-size: 0.7rem;
     }
 }
 
@@ -640,8 +684,11 @@ body {
         </div>
         <div class="time-info" id="timeInfo">
             <span class="time-icon">🕐</span>
-            <span class="time-display">--:--</span>
-            <span class="time-date">--/--/----</span>
+            <span class="time-display">--:--:--</span>
+            <div class="time-details">
+                <span class="time-day" id="weekDay">Carregando...</span>
+                <span class="time-date" id="fullDate">--/--/----</span>
+            </div>
         </div>
     </div>
 </div>
@@ -764,36 +811,75 @@ function atualizarAno() {
     document.getElementById('currentYear').textContent = anoAtual;
 }
 
-// 2. Atualizar horário em tempo real
+// 2. Obter nome do dia da semana em português
+function getDiaSemana(dia) {
+    const dias = [
+        'DOMINGO', 'SEGUNDA-FEIRA', 'TERÇA-FEIRA', 
+        'QUARTA-FEIRA', 'QUINTA-FEIRA', 'SEXTA-FEIRA', 'SÁBADO'
+    ];
+    return dias[dia];
+}
+
+// 3. Obter nome do mês em português
+function getNomeMes(mes) {
+    const meses = [
+        'JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+        'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'
+    ];
+    return meses[mes];
+}
+
+// 4. Formatar data completa em português
+function formatarDataCompleta(data) {
+    const diaNum = data.getDate();
+    const mesNum = data.getMonth();
+    const ano = data.getFullYear();
+    
+    const diaSemana = getDiaSemana(data.getDay());
+    const nomeMes = getNomeMes(mesNum);
+    
+    return {
+        diaSemana: diaSemana,
+        dataFormatada: `${diaNum.toString().padStart(2, '0')}/${(mesNum + 1).toString().padStart(2, '0')}/${ano}`,
+        dataExtenso: `${diaNum} de ${nomeMes} de ${ano}`
+    };
+}
+
+// 5. Atualizar horário em tempo real
 function atualizarHorario() {
     const agora = new Date();
-    const timeInfo = document.getElementById('timeInfo');
     
     // Formatar hora
     const horas = agora.getHours().toString().padStart(2, '0');
     const minutos = agora.getMinutes().toString().padStart(2, '0');
     const segundos = agora.getSeconds().toString().padStart(2, '0');
     
-    // Formatar data
-    const dia = agora.getDate().toString().padStart(2, '0');
-    const mes = (agora.getMonth() + 1).toString().padStart(2, '0');
-    const ano = agora.getFullYear();
+    // Formatar data completa
+    const dataFormatada = formatarDataCompleta(agora);
     
     // Atualizar elementos
-    const timeDisplay = timeInfo.querySelector('.time-display');
-    const timeDate = timeInfo.querySelector('.time-date');
+    const timeDisplay = document.querySelector('.time-display');
+    const weekDay = document.getElementById('weekDay');
+    const fullDate = document.getElementById('fullDate');
     
     timeDisplay.textContent = `${horas}:${minutos}:${segundos}`;
-    timeDate.textContent = `${dia}/${mes}/${ano}`;
+    weekDay.textContent = dataFormatada.diaSemana;
+    fullDate.textContent = dataFormatada.dataFormatada;
+    
+    // Adicionar título com data por extenso
+    timeDisplay.title = dataFormatada.dataExtenso;
+    weekDay.title = dataFormatada.dataExtenso;
+    fullDate.title = dataFormatada.dataExtenso;
     
     // Adicionar classe de atualização a cada minuto
     if (minutos === '00' && segundos === '00') {
+        const timeInfo = document.getElementById('timeInfo');
         timeInfo.classList.add('updating');
         setTimeout(() => timeInfo.classList.remove('updating'), 1000);
     }
 }
 
-// 3. Obter clima de Rondonópolis em tempo real
+// 6. Obter clima de Rondonópolis em tempo real
 async function atualizarClima() {
     try {
         // Coordenadas de Rondonópolis: latitude -16.4704, longitude -54.6359
@@ -839,8 +925,40 @@ async function atualizarClima() {
             const weatherIcon = weatherIcons[weatherCode] || '🌤️';
             const weatherInfo = document.getElementById('weatherInfo');
             
+            // Atualizar ícone e temperatura
             weatherInfo.querySelector('.weather-icon').textContent = weatherIcon;
             weatherInfo.querySelector('.weather-temp').textContent = `${temperatura}°C`;
+            
+            // Adicionar descrição do clima como título
+            const descricoes = {
+                0: 'Céu limpo',
+                1: 'Principalmente limpo',
+                2: 'Parcialmente nublado',
+                3: 'Nublado',
+                45: 'Nevoeiro',
+                48: 'Nevoeiro com geada',
+                51: 'Chuvisco leve',
+                53: 'Chuvisco moderado',
+                55: 'Chuvisco denso',
+                61: 'Chuva leve',
+                63: 'Chuva moderada',
+                65: 'Chuva forte',
+                71: 'Neve leve',
+                73: 'Neve moderada',
+                75: 'Neve forte',
+                80: 'Pancadas de chuva leve',
+                81: 'Pancadas de chuva moderada',
+                82: 'Pancadas de chuva forte',
+                85: 'Pancadas de neve leve',
+                86: 'Pancadas de neve forte',
+                95: 'Tempestade',
+                96: 'Tempestade com granizo leve',
+                99: 'Tempestade com granizo forte'
+            };
+            
+            const descricao = descricoes[weatherCode] || 'Condições climáticas';
+            weatherInfo.querySelector('.weather-icon').title = descricao;
+            weatherInfo.querySelector('.weather-temp').title = `Temperatura atual: ${temperatura}°C`;
             
             // Adicionar efeito de atualização
             weatherInfo.classList.add('updating');
@@ -852,6 +970,8 @@ async function atualizarClima() {
         const weatherInfo = document.getElementById('weatherInfo');
         weatherInfo.querySelector('.weather-icon').textContent = '🌤️';
         weatherInfo.querySelector('.weather-temp').textContent = '28°C';
+        weatherInfo.querySelector('.weather-icon').title = 'Condições climáticas';
+        weatherInfo.querySelector('.weather-temp').title = 'Temperatura estimada';
     }
 }
 
@@ -1020,7 +1140,7 @@ document.addEventListener('click', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializar funções de tempo real
     atualizarAno();
-    atualizarHorario();
+    atualizarHorario(); // Chamar imediatamente para mostrar dados rapidamente
     atualizarClima();
     
     // Iniciar serviços existentes
