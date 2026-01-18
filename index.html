@@ -549,7 +549,7 @@ body {
         <div class="service-card">
             <h2>Formatação de Computadores</h2>
             <p>
-                <strong>Atendimento Local</strong><br>
+                <strong>Atendimento Local Exclusivo</strong><br>
                 Rondonópolis e Pedra Preta - MT<br><br>
                 <strong>CLIENTE TRAZ ATÉ NÓS E JÁ ESPERA NO LOCAL!</strong><br>
                 Formatação completa com Windows 10/11 PRO + Office ativado
@@ -564,7 +564,7 @@ body {
         <div class="service-card">
             <h2>Suporte Remoto 24 Horas</h2>
             <p>
-                <strong>ATENDEMOS TODO BRASIL!</strong><br><br>
+                <strong>ATENDEMOS TODO MATO GROSSO E BRASIL!</strong><br><br>
                 ✔ Ativação Windows e Office<br>
                 ✔ Instalação Office Ativado<br>
                 ✔ Instalação de Programas
@@ -579,7 +579,8 @@ body {
         <div class="service-card">
             <h2>Office 2024 + Ativador</h2>
             <p>
-                <strong>PACK COMPLETO OFFICE 2021 A 2024 + ATIVADOR!</strong><br><br>
+                <strong>ENTREGAMOS EM TODO MATO GROSSO!</strong><br><br>
+                PACK COMPLETO OFFICE 2021 A 2024 + ATIVADOR!<br>
                 100% HOSPEDADO NO TELEGRAM<br>
                 APÓS PAGAMENTO RECEBE O LINK NO SEU EMAIL!
             </p>
@@ -649,7 +650,12 @@ const dados = {
     ],
     cidades: {
         formatacao: ["Rondonópolis - MT", "Pedra Preta - MT"],
-        remoto: ["Cuiabá - MT", "Várzea Grande - MT", "São Paulo - SP", "Rio de Janeiro - RJ"]
+        remoto: [
+            "Cuiabá - MT", "Várzea Grande - MT", "Sinop - MT", "Tangará da Serra - MT",
+            "Cáceres - MT", "Sorriso - MT", "Lucas do Rio Verde - MT", "Primavera do Leste - MT",
+            "Barra do Garças - MT", "Alta Floresta - MT", "Pontes e Lacerda - MT", "Juína - MT",
+            "Rondonópolis - MT", "Pedra Preta - MT" // Também podem ser para suporte/office
+        ]
     },
     acoes: [
         "Agendou formatação",
@@ -661,8 +667,10 @@ const dados = {
         {cidade: "Rondonópolis - MT", texto: "Formatação rápida, PC ficou novo! Recomendo muito."},
         {cidade: "Pedra Preta - MT", texto: "Atendimento excelente, muito profissional."},
         {cidade: "Cuiabá - MT", texto: "Suporte remoto resolveu tudo na hora, salvou meu trabalho!"},
-        {cidade: "São Paulo - SP", texto: "Office instalado perfeitamente, tutorial muito claro."},
-        {cidade: "Várzea Grande - MT", texto: "Resolveram sem eu sair de casa, muito prático."}
+        {cidade: "Sinop - MT", texto: "Office instalado perfeitamente, tutorial muito claro."},
+        {cidade: "Várzea Grande - MT", texto: "Resolveram sem eu sair de casa, muito prático."},
+        {cidade: "Lucas do Rio Verde - MT", texto: "Office ativado rapidamente, ótimo atendimento!"},
+        {cidade: "Primavera do Leste - MT", texto: "Suporte eficiente, problema resolvido em minutos."}
     ]
 };
 
@@ -674,9 +682,16 @@ function mostrarNotificacao() {
     
     const pessoa = dados.pessoas[Math.floor(Math.random() * dados.pessoas.length)];
     const acao = dados.acoes[Math.floor(Math.random() * dados.acoes.length)];
-    const cidade = acao.includes("formatação") 
-        ? dados.cidades.formatacao[Math.floor(Math.random() * dados.cidades.formatacao.length)]
-        : dados.cidades.remoto[Math.floor(Math.random() * dados.cidades.remoto.length)];
+    
+    // Lógica para determinar a cidade baseada na ação
+    let cidade;
+    if (acao === "Agendou formatação") {
+        // Formatação: apenas Rondonópolis ou Pedra Preta
+        cidade = dados.cidades.formatacao[Math.floor(Math.random() * dados.cidades.formatacao.length)];
+    } else {
+        // Suporte, Office e outras ações: qualquer cidade de MT
+        cidade = dados.cidades.remoto[Math.floor(Math.random() * dados.cidades.remoto.length)];
+    }
     
     const imgId = Math.floor(Math.random() * 70) + 1;
     document.getElementById('notificationImg').src = `https://randomuser.me/api/portraits/${pessoa.sexo === "m" ? "men" : "women"}/${imgId}.jpg`;
